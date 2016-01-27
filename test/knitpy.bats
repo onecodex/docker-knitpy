@@ -11,3 +11,9 @@
     [[ $R == *pandas* ]]
     [[ $R == *numpy* ]]
 }
+
+@test "Knitpy installed properly" {
+    knitpy example.pymd
+    C=$(md5sum /knitpy/example.html)
+    [[ $C == "e099cb277456f58c1a669c6aada3794f /knitpy/example.html" ]]
+}

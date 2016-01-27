@@ -1,20 +1,21 @@
-FROM quay.io/refgenomics/docker-ubuntu:14.04
-MAINTAINER Nick Greenfield <nick@onecodex.com>
-
-# Install make and gcc and standard build libraries
-RUN apt-get install -y build-essential
-RUN apt-get install -y gcc
-RUN apt-get install -y python python-dev python-pip
-RUN apt-get install -y python-numpy ipython
+FROM python:2.7
+RUN apt-get update -y
+RUN apt-get install -y texlive-full
 RUN apt-get install -y pandoc
 
-# Pip requirements
+# Install bats
+RUN git clone https://github.com/sstephenson/bats.git /tmp/bats && \
+    cd /tmp/bats && ./install.sh /usr/local
+
+# Install Python requirements
+RUN pip install --upgrade pip
 ADD requirements.txt .
 RUN pip install -r requirements.txt && rm requirements.txt
 
-# Tex?
-# RUN apt-get install -y texlive
-
-# Integration tests
+# Run bats
 ADD test /tmp/test
 RUN bats /tmp/test
+
+# Change
+ADD example.pymd /knitpy/example.pymd
+CMD /bin/bash
